@@ -59,7 +59,7 @@ ExternalProject_Add(libjpeg
 	CONFIGURE_COMMAND NMAKE /f makefile.vs setupcopy-v16
 	BUILD_COMMAND MSBUILD jpeg.sln ${MSBUILD_ARGS}
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_LIBDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different Release/PLATFORM/jpeg.lib ${CMAKE_INSTALL_FULL_LIBDIR}/
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different Release/${PLATFORM}/jpeg.lib ${CMAKE_INSTALL_FULL_LIBDIR}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different jpeglib.h jerror.h jconfig.h jmorecfg.h ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
 	BUILD_IN_SOURCE TRUE
 )
