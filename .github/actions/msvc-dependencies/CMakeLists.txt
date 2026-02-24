@@ -5,8 +5,15 @@ project(tw-deps)
 include(ExternalProject)
 include(GNUInstallDirs)
 
+# Set target platform for compiling MSVC dependencies
+if(CMAKE_GENERATOR_PLATFORM)
+    set(PLATFORM ${CMAKE_GENERATOR_PLATFORM})
+else()
+    set(PLATFORM PLATFORM)
+endif()
+
 set(CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${CMAKE_INSTALL_PREFIX} -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=TRUE)
-set(MSBUILD_ARGS /t:rebuild /p:Configuration=Release /p:Platform=$(Platform) /p:PlatformToolset=$(PlatformToolset) /p:WindowsTargetPlatformVersion=$(WindowsTargetPlatformVersion))
+set(MSBUILD_ARGS /t:rebuild /p:Configuration=Release /p:Platform=$(PLATFORM) /p:PlatformToolset=$(PlatformToolset) /p:WindowsTargetPlatformVersion=$(WindowsTargetPlatformVersion))
 
 ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.5.0.tar.gz"
@@ -22,9 +29,9 @@ ExternalProject_Add(hunspell
 	BUILD_COMMAND msbuild msvc\\libhunspell.vcxproj ${MSBUILD_ARGS} /p:Configuration=Release_dll
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_LIBDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/x64/Release_dll/libhunspell.lib ${CMAKE_INSTALL_FULL_LIBDIR}/hunspell.lib
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/PLATFORM/Release_dll/libhunspell.lib ${CMAKE_INSTALL_FULL_LIBDIR}/hunspell.lib
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_BINDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/x64/Release_dll/libhunspell.dll ${CMAKE_INSTALL_FULL_BINDIR}/
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/PLATFORM/Release_dll/libhunspell.dll ${CMAKE_INSTALL_FULL_BINDIR}/
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_INCLUDEDIR}
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/atypes.hxx ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/hunspell.h ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
@@ -52,7 +59,7 @@ ExternalProject_Add(libjpeg
 	CONFIGURE_COMMAND NMAKE /f makefile.vs setupcopy-v16
 	BUILD_COMMAND MSBUILD jpeg.sln ${MSBUILD_ARGS}
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_LIBDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different Release/x64/jpeg.lib ${CMAKE_INSTALL_FULL_LIBDIR}/
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different Release/PLATFORM/jpeg.lib ${CMAKE_INSTALL_FULL_LIBDIR}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different jpeglib.h jerror.h jconfig.h jmorecfg.h ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
 	BUILD_IN_SOURCE TRUE
 )
