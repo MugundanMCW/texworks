@@ -19,7 +19,7 @@ ExternalProject_Add(lua
 	URL "https://www.lua.org/ftp/lua-5.5.0.tar.gz"
 	URL_HASH SHA256=57ccc32bbbd005cab75bcc52444052535af691789dba2b9016d5c50640d68b3d
 	PATCH_COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_LIST_DIR}/lua.cmake <SOURCE_DIR>/CMakeLists.txt
-	CMAKE_ARGS ${CMAKE_ARGS}
+	CMAKE_ARGS ${CMAKE_ARGS} -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 )
 
 ExternalProject_Add(hunspell
