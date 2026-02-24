@@ -22,23 +22,6 @@ ExternalProject_Add(lua
 	CMAKE_ARGS ${CMAKE_ARGS} -DCMAKE_POLICY_VERSION_MINIMUM=3.5
 )
 
-ExternalProject_Add(hunspell
-	URL "https://github.com/hunspell/hunspell/archive/refs/tags/v1.7.2.tar.gz"
-	URL_HASH SHA256=69fa312d3586c988789266eaf7ffc9861d9f6396c31fc930a014d551b59bbd6e
-	CONFIGURE_COMMAND ""
-	BUILD_COMMAND msbuild msvc\\libhunspell.vcxproj ${MSBUILD_ARGS} /p:Configuration=Release_dll
-	BUILD_IN_SOURCE TRUE
-	INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_LIBDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/PLATFORM/Release_dll/libhunspell.lib ${CMAKE_INSTALL_FULL_LIBDIR}/hunspell.lib
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_BINDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/PLATFORM/Release_dll/libhunspell.dll ${CMAKE_INSTALL_FULL_BINDIR}/
-		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_INCLUDEDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/atypes.hxx ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/hunspell.h ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/hunspell.hxx ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/hunvisapi.h ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/w_char.hxx ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
-)
 
 ExternalProject_Add(zlib
 	URL "https://github.com/madler/zlib/archive/refs/tags/v1.3.1.tar.gz"
