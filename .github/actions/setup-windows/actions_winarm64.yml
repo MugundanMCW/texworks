@@ -1,0 +1,93 @@
+name: 'Set up build environment for TeXworks for Windows ARM'
+author: 'Stefan Löffler'
+description: ''
+
+runs:
+  using: composite
+  steps:
+    - name: Install MSYS2 build dependencies
+      uses: msys2/setup-msys2@v2
+      with:
+        msystem: CLANGARM64
+        update: true
+        install: >-
+          mingw-w64-clang-aarch64-cmake
+          mingw-w64-clang-aarch64-ninja
+          mingw-w64-clang-aarch64-clang
+          mingw-w64-clang-aarch64-boost
+          mingw-w64-clang-aarch64-cairo
+          mingw-w64-clang-aarch64-curl
+          mingw-w64-clang-aarch64-freetype
+          mingw-w64-clang-aarch64-glib2
+          mingw-w64-clang-aarch64-libjpeg-turbo
+          mingw-w64-clang-aarch64-lcms2
+          mingw-w64-clang-aarch64-libpng
+          mingw-w64-clang-aarch64-libwebp
+          mingw-w64-clang-aarch64-openjpeg2
+          mingw-w64-clang-aarch64-libtiff
+          mingw-w64-clang-aarch64-zlib
+          mingw-w64-clang-aarch64-qt6-base
+          mingw-w64-clang-aarch64-qt6-tools
+          mingw-w64-clang-aarch64-pkg-config
+          mingw-w64-clang-aarch64-nasm
+
+    - name: Download poppler source
+      shell: msys2 {0}
+      run: |
+        PKG_VERSION="26.01.0"
+        PKG_CHECKSUM="1cb944a4b88847f5fb6551683bc799db59f04990f5d8be07aba2acbf38601089"
+        PKG_FILE="poppler-${PKG_VERSION}.tar.xz"
+        PKG_URL="https://poppler.freedesktop.org/${PKG_FILE}"
+        wget -O "/tmp/${PKG_FILE}" "${PKG_URL}"
+        tar -C /tmp --xz -xf "/tmp/${PKG_FILE}"
+        echo "POPPLER_SRC=/tmp/poppler-${PKG_VERSION}" >> $GITHUB_ENV
+
+    - name: Build and install poppler (core)
+      shell: msys2 {0}
+      run: |
+        cmake -B /tmp/poppler-build -G Ninja \
+          -DCMAKE_INSTALL_PREFIX="${MINGW_PREFIX}" \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DPOPPLER_REQUIRES="lcms2 freetype2 libjpeg libpng libopenjp2 libtiff-4" \
+          -DENABLE_UNSTABLE_API_ABI_HEADERS=ON \
+          -DBUILD_GTK_TESTS=OFF \
+          -DBUILD_QT5_TESTS=OFF \
+          -DBUILD_QT6_TESTS=OFF \
+          -DBUILD_CPP_TESTS=OFF \
+          -DBUILD_MANUAL_TESTS=OFF \
+          -DENABLE_SPLASH=ON \
+          -DENABLE_UTILS=OFF \
+          -DENABLE_CPP=ON \
+          -DENABLE_GLIB=ON \
+          -DENABLE_GOBJECT_INTROSPECTION=OFF \
+          -DENABLE_GTK_DOC=OFF \
+          -DENABLE_QT5=OFF \
+          -DENABLE_QT6=ON \
+          -DENABLE_LIBOPENJPEG=openjpeg2 \
+          -DENABLE_LCMS=ON \
+          -DENABLE_DCTDECODER=libjpeg \
+          -DENABLE_LIBCURL=ON \
+          -DENABLE_LIBTIFF=ON \
+          -DENABLE_NSS3=OFF \
+          -DENABLE_GPGME=OFF \
+          -DENABLE_ZLIB=ON \
+          -DENABLE_ZLIB_UNCOMPRESS=OFF \
+          -DSPLASH_CMYK=ON \
+          -DUSE_FIXEDPOINT=OFF \
+          -DUSE_FLOAT=OFF \
+          -DBUILD_SHARED_LIBS=ON \
+          -DENABLE_RELOCATABLE=ON \
+          -DEXTRA_WARN=OFF \
+          -DFONT_CONFIGURATION=win32 \
+          "${POPPLER_SRC}"
+
+        cmake --build /tmp/poppler-build -j$(nproc)
+        cmake --install /tmp/poppler-build
+
+    - name: Verify poppler installation
+      shell: msys2 {0}
+      run: |
+        echo "--- pkg-config check ---"
+        pkg-config --modversion poppler
+        pkg-config --modversion poppler-qt6
+        pkg-config --cflags --libs poppler-qt6
