@@ -136,14 +136,18 @@ jobs:
       with:
         version: 6.8.*
         modules: qt5compat
-
+        
+    - name: Install Hunspell
+      run: |
+        C:\vcpkg\vcpkg.exe install hunspell:arm64-windows
+        
     - name: Install dependencies
       run: |
         cmake -A ARM64 -B "${{ runner.workspace }}/tw-deps-build" -S "${{ github.workspace }}/.github/actions/msvc-dependencies" -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/tw-deps"
         cmake --build "${{ runner.workspace }}/tw-deps-build" --config Release
 
     - name: Configure
-      run: cmake -A ARM64 -B build -DTW_BUILD_ID='github' -DCMAKE_PREFIX_PATH="${{ runner.workspace }}/tw-deps" -Dgp_tool='none' -DQT_DEFAULT_MAJOR_VERSION=6
+      run: cmake -A ARM64 -B build -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake -DTW_BUILD_ID='github' -DCMAKE_PREFIX_PATH="${{ runner.workspace }}/tw-deps" -Dgp_tool='none' -DQT_DEFAULT_MAJOR_VERSION=6
 
     - name: Build
       run: cmake --build build --config Release
@@ -153,6 +157,7 @@ jobs:
         cmake -E copy_directory build/share build/Release/share
         cd "${{ runner.workspace }}/tw-deps/bin"
         cmake -E copy freetype.dll lcms2.dll libhunspell.dll libpng16.dll lua.dll openjp2.dll poppler.dll poppler-qt6.dll tiff.dll zlib1.dll "${{ github.workspace }}/build/Release/"
+        cmake -E copy C:/vcpkg/installed/arm64-windows/bin/hunspell.dll "${{ github.workspace }}/build/Release/"
 
     - name: Test
       run: ctest -V -C Release
