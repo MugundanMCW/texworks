@@ -136,10 +136,6 @@ jobs:
         version: 6.8.*
         modules: qt5compat
   
-    - name: Install Hunspell
-      run: |
-        C:\vcpkg\vcpkg.exe install hunspell:arm64-windows
-  
     - name: Install dependencies
       run: |
         cmake -A ARM64 -B "${{ runner.workspace }}/tw-deps-build" -S "${{ github.workspace }}/.github/actions/msvc-dependencies" -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/tw-deps"
@@ -158,8 +154,7 @@ jobs:
       run: |
         cmake -E copy_directory build/share build/Release/share
         cd "${{ runner.workspace }}/tw-deps/bin"
-        cmake -E copy freetype.dll lcms2.dll libpng16.dll lua.dll openjp2.dll poppler.dll poppler-qt6.dll tiff.dll zlib1.dll "${{ github.workspace }}/build/Release/"
-        cmake -E copy_directory C:/vcpkg/installed/arm64-windows/bin "${{ github.workspace }}/build/Release/"
+        cmake -E copy freetype.dll lcms2.dll libhunspell.dll libpng16.dll lua.dll openjp2.dll poppler.dll poppler-qt6.dll tiff.dll zlib1.dll "${{ github.workspace }}/build/Release/"
   
     - name: Test
       run: ctest -V -C Release
@@ -206,10 +201,6 @@ jobs:
         version: 6.8.*
         modules: qt5compat
         
-    - name: Install Hunspell
-      run: |
-        C:\vcpkg\vcpkg.exe install hunspell:arm64-windows
-        
     - name: Install dependencies
       run: |
         cmake -A ARM64 -B "${{ runner.workspace }}/tw-deps-build" -S "${{ github.workspace }}/.github/actions/msvc-dependencies" -DCMAKE_INSTALL_PREFIX="${{ runner.workspace }}/tw-deps"
@@ -225,8 +216,7 @@ jobs:
       run: |
         cmake -E copy_directory build/share build/Release/share
         cd "${{ runner.workspace }}/tw-deps/bin"
-        cmake -E copy freetype.dll lcms2.dll libpng16.dll lua.dll openjp2.dll poppler.dll poppler-qt6.dll tiff.dll zlib1.dll "${{ github.workspace }}/build/Release/"
-        cmake -E copy_directory C:/vcpkg/installed/arm64-windows/bin "${{ github.workspace }}/build/Release/"
+        cmake -E copy freetype.dll lcms2.dll libhunspell.dll libpng16.dll lua.dll openjp2.dll poppler.dll poppler-qt6.dll tiff.dll zlib1.dll "${{ github.workspace }}/build/Release/"
 
     - name: Test
       run: ctest -V -C Release
