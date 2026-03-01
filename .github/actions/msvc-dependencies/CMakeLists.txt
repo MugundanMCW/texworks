@@ -30,9 +30,9 @@ ExternalProject_Add(hunspell
 	BUILD_COMMAND msbuild msvc\\libhunspell.vcxproj ${MSBUILD_ARGS} /p:Configuration=Release_dll
 	BUILD_IN_SOURCE TRUE
 	INSTALL_COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_LIBDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/PLATFORM/Release_dll/libhunspell.lib ${CMAKE_INSTALL_FULL_LIBDIR}/hunspell.lib
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/${PLATFORM}/Release_dll/libhunspell.lib ${CMAKE_INSTALL_FULL_LIBDIR}/hunspell.lib
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_BINDIR}
-		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/PLATFORM/Release_dll/libhunspell.dll ${CMAKE_INSTALL_FULL_BINDIR}/
+		COMMAND ${CMAKE_COMMAND} -E copy_if_different msvc/${PLATFORM}/Release_dll/libhunspell.dll ${CMAKE_INSTALL_FULL_BINDIR}/
 		COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_INSTALL_FULL_INCLUDEDIR}
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/atypes.hxx ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
 		COMMAND ${CMAKE_COMMAND} -E copy_if_different src/hunspell/hunspell.h ${CMAKE_INSTALL_FULL_INCLUDEDIR}/
