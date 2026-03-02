@@ -165,6 +165,8 @@ jobs:
     - name: Package
       uses: ./.github/actions/package-windows
       id: package
+      env:
+        arch: ARM64
   
     - name: Upload artifact
       uses: actions/upload-artifact@v4
