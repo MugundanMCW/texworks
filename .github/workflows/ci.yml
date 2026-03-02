@@ -177,7 +177,8 @@ jobs:
     # InnoSetup ARM64 support requires v6.3+
     - name: Install InnoSetup
       run: choco install innosetup
-  
+    - name: Prepare installer files
+      run: cmake -E copy_directory build/Release win32/../release
     - name: Build installer
       run: ISCC texworks-setup-script.iss
       working-directory: win32
