@@ -23,11 +23,12 @@ runs:
   using: composite
   steps:
     - name: Assemble package
-      shell: wsl-bash {0}
+      shell: bash
       run: cpack --verbose
       working-directory: ${{ inputs.builddir }}
 
-    - name: Info
+    - name: Info WSL-x64
+      if: env.arch != 'ARM64'
       shell: wsl-bash {0}
       id: info
       run: |
@@ -42,3 +43,21 @@ runs:
         echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
         echo "fullversion=${FULLVERSION}" >> "${GITHUB_OUTPUT}"
         echo "file=${FILENAME}" >> "${GITHUB_OUTPUT}"
+
+    - name: Info Windows ARM64
+      if: env.arch == 'ARM64'
+      shell: bash
+      id: info
+      working-directory: ${{ inputs.builddir }}
+      run: |
+        FILENAME=$(find . -maxdepth 1 -name 'TeXworks-win-*.zip')
+        VERSION=$(basename "$FILENAME" | sed -e 's/^TeXworks-win-\([^-]*\)-.*\.zip$/\1/')
+        FULLVERSION=$(basename "$FILENAME" | sed -e 's/^TeXworks-win-\(.*\)\.zip$/\1/')
+        echo "MD5"
+        md5sum "$FILENAME"
+        echo "SHA256"
+        sha256sum "$FILENAME"
+        echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+        echo "fullversion=${FULLVERSION}" >> "$GITHUB_OUTPUT"
+        echo "file=${{ inputs.builddir }}/${FILENAME}" >> "$GITHUB_OUTPUT"
+  
