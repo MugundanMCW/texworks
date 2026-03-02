@@ -50,7 +50,7 @@ runs:
       id: info-arm64
       working-directory: ${{ inputs.builddir }}
       run: |
-        FILENAME=$(find . -maxdepth 1 -name 'TeXworks-win-*.zip')
+        FILENAME=$(find . -maxdepth 1 -name 'TeXworks-win-*.zip' | sed 's|^\./||')
         VERSION=$(basename "$FILENAME" | sed -e 's/^TeXworks-win-\([^-]*\)-.*\.zip$/\1/')
         FULLVERSION=$(basename "$FILENAME" | sed -e 's/^TeXworks-win-\(.*\)\.zip$/\1/')
         echo "MD5"
