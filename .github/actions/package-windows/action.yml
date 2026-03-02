@@ -30,7 +30,7 @@ runs:
     - name: Info WSL-x64
       if: env.arch != 'ARM64'
       shell: wsl-bash {0}
-      id: info
+      id: info-x64
       run: |
         GITHUB_OUTPUT=$(echo "${{ github.output }}" | tr '\\' '/' | sed -e 's!\([A-Za-z]\):/!/mnt/\L\1/!')
         FILENAME=$(find ${{ inputs.builddir }} -maxdepth 1 -name 'TeXworks-win-*.zip')
@@ -47,7 +47,7 @@ runs:
     - name: Info Windows ARM64
       if: env.arch == 'ARM64'
       shell: bash
-      id: info
+      id: info-arm64
       working-directory: ${{ inputs.builddir }}
       run: |
         FILENAME=$(find . -maxdepth 1 -name 'TeXworks-win-*.zip')
