@@ -11,13 +11,13 @@ inputs:
 outputs:
   file:
     description: 'The filename of the packaged artifact (relative to builddir)'
-    value: ${{ steps.info.outputs.file }}
+    value: ${{ steps.info-arm64.outputs.file }}
   version:
     description: 'The version of the packaged artifact (e.g., 0.7)'
-    value: ${{ steps.info.outputs.version }}
+    value: ${{ steps.info-arm64.outputs.version }}
   fullversion:
     description: 'The full version of the packaged artifact (e.g., 0.7-202011160643-git_14dcc2c)'
-    value: ${{ steps.info.outputs.fullversion }}
+    value: ${{ steps.info-arm64.outputs.fullversion }}
 
 runs:
   using: composite
