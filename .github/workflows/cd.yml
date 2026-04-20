@@ -206,7 +206,14 @@ jobs:
       working-directory: build
       env:
         QT_FORCE_STDERR_LOGGING: 1
-
+        
+    - name: Prepare dependencies for packaging
+      shell: cmd
+      run: |
+        set PATH=${{ env.QT_ROOT_DIR }}\bin;%PATH%
+        windeployqt --release --compiler-runtime install\bin\texworks.exe
+        cmake -E copy_directory "%RUNNER_WORKSPACE%\tw-deps\bin" install\bin
+      
     - name: Package
       uses: ./.github/actions/package-windows
       id: package
