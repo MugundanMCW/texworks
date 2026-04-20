@@ -143,7 +143,9 @@ jobs:
         with:
           version: 6.8.*
           modules: qt5compat
-  
+          
+      # Strawberry perl comes with all sorts of libraries (without headers) that
+      # can wreak havoc when building some of the dependencies
       - name: Remove Strawberry Perl
         if: matrix.arch == 'x64'
         run: rm -r -fo C:/Strawberry
