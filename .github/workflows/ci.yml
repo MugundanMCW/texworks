@@ -143,7 +143,7 @@ jobs:
       with:
         version: 6.8.*
         modules: qt5compat
-        
+
       # Strawberry perl comes with all sorts of libraries (without headers) that
       # can wreak havoc when building some of the dependencies
     - name: Remove Strawberry Perl
@@ -173,7 +173,7 @@ jobs:
       env:
         QT_FORCE_STDERR_LOGGING: 1
 
-#################################################################################
+##################################################################################
 
   macosx-homebrew:
     name: Mac OS X (Homebrew)
