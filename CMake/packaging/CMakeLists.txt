@@ -48,7 +48,19 @@ if (WIN32)
 		PATTERN pkgconfig EXCLUDE)
 	install(FILES "${CMAKE_SOURCE_DIR}/COPYING" DESTINATION ".")
 	install(FILES "${CMAKE_SOURCE_DIR}/win32/README.win" DESTINATION "." RENAME "README.txt")
-
+	if (CMAKE_SYSTEM_PROCESSOR MATCHES "ARM64")
+	    install(CODE "
+	        find_program(WINDEPLOYQT windeployqt HINTS \"${QT_DIR}/../../../bin\")
+	        if (WINDEPLOYQT)
+	            execute_process(COMMAND \${WINDEPLOYQT} --release --compiler-runtime \"\${CMAKE_INSTALL_PREFIX}/texworks.exe\")
+	        endif()
+	        foreach(DLL freetype.dll lcms2.dll libhunspell.dll libpng16.dll lua.dll openjp2.dll poppler.dll poppler-qt6.dll tiff.dll zlib1.dll)
+	            if (EXISTS \"${CMAKE_PREFIX_PATH}/bin/\${DLL}\")
+	                file(COPY \"${CMAKE_PREFIX_PATH}/bin/\${DLL}\" DESTINATION \"\${CMAKE_INSTALL_PREFIX}\")
+	            endif()
+	        endforeach()
+	    ")
+	endif()
 	ExternalProject_Add(texworks-help
 		URL ${MANUAL_HTML_URL}
 		URL_HASH SHA256=${MANUAL_HTML_SHA256}
